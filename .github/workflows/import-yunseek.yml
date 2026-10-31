@@ -1,0 +1,76 @@
+name: Import YunSeek source snapshot
+
+on:
+  push:
+    branches:
+      - integration/yunseek-1.8.1
+    paths:
+      - .github/workflows/import-yunseek.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: import-yunseek-{{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  import-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Lspds integration branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Download pinned YunSeek source archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 \
+            https://codeload.github.com/ZW-SYS/Deekseep-Custom/zip/c315b82451d97e9668e2452992f1a0a2fd4a784a \
+            --output /tmp/yunseek.zip
+          mkdir -p /tmp/yunseek
+          unzip -q /tmp/yunseek.zip -d /tmp/yunseek
+          SOURCE_DIR="$(find /tmp/yunseek -mindepth 1 -maxdepth 1 -type d | head -n 1)"
+          test -n "$SOURCE_DIR"
+          test -f "$SOURCE_DIR/LICENSE"
+          test -f "$SOURCE_DIR/README.md"
+          echo "SOURCE_DIR=$SOURCE_DIR" >> "$GITHUB_ENV"
+
+      - name: Replace submodule pointer with complete source tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm -f vendor/yunseek
+          rm -f .gitmodules
+          mkdir -p vendor/yunseek
+          cp -a "$SOURCE_DIR"/. vendor/yunseek/
+          test -f vendor/yunseek/LICENSE
+          test -f vendor/yunseek/README.md
+          printf '%s\n' \
+            'Imported from https://github.com/ZW-SYS/Deekseep-Custom' \
+            'Pinned commit: c315b82451d97e9668e2452992f1a0a2fd4a784a' \
+            'Source license: GPL-3.0' \
+            'This is a source snapshot; Lspds integration/build validation is tracked separately.' \
+            > vendor/yunseek/LSPDS_IMPORT_PROVENANCE.txt
+          git add -A vendor/yunseek .gitmodules
+          if git diff --cached --quiet; then
+            echo "No source changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "vendor: import complete YunSeek 1.8.1 source snapshot"
+          git push origin "HEAD:${{ github.ref_name }}"
+
+      - name: Verify imported source inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f vendor/yunseek/LICENSE
+          test -f vendor/yunseek/module/src/com/dsmod/probe/HostCompat.java
+          test -f vendor/yunseek/module/src/com/dsmod/probe/HookChatPipeline.java
+          find vendor/yunseek -type f | wc -l
