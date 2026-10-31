@@ -1,0 +1,3 @@
+-keep class org.qingjian.lspds.hook.LspdsModule { *; }
+-keep class io.github.libxposed.** { *; }
+-dontwarn io.github.libxposed.**
