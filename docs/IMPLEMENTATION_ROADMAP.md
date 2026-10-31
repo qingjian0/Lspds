@@ -1,5 +1,21 @@
 # 实施路线图与阶段验收
 
+> 2026-10-31 决策更新：业务底包确定为 YunSeek 1.8.1。后续执行以 [YunSeek 底包迁移与功能融合方案](YUNSEEK_BASELINE_MIGRATION.md) 为准；先完成源码/许可/依赖盘点和可构建迁移，再扩展功能。不要继续把从零实现全部业务 Hook 作为主路线。
+
+## Stage 0A — YunSeek 底包迁移（当前优先）
+
+- [x] 确定 YunSeek 1.8.1 为业务源码底包
+- [x] 核验 YunSeek 仓库、README、GPL-3.0 与关键 Hook 源码路径
+- [x] 建立源码迁移、包名保留、功能融合和版本矩阵方案
+- [ ] 固定上游 commit SHA，建立来源与第三方许可证清单
+- [ ] 分批迁入 HostCompat、HostV271、HookChatPipeline 及必要映射资源
+- [ ] 保留 Lspds applicationId、libxposed 元数据、scope 与 CI
+- [ ] 合并 Gradle 依赖，完成 unit tests 与 assembleDebug
+- [ ] 检查 APK 元数据和 LSPosed 模块加载
+
+验收：源码迁移可追溯、GPL/NOTICE 完整、CI 绿色、Lspds 包名不与 YunSeek 冲突；未完成宿主验证前不启用业务 Hook。
+
+
 ## Stage 0 — 规划基线（当前阶段）
 
 详细的 Hook 类、版本矩阵、请求/SSE/Agent/附件/会话/UI/Gateway 设计见 [DEEPSEEK_HOOK_DESIGN.md](DEEPSEEK_HOOK_DESIGN.md)。
