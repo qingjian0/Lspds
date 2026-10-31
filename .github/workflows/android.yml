@@ -1,13 +1,15 @@
 name: Android CI
 on:
   push:
-    branches: [main]
+    branches: [main, 'integration/**']
     paths:
       - 'app/**'
       - 'build.gradle.kts'
       - 'settings.gradle.kts'
       - 'gradle.properties'
       - 'gradle/**'
+      - 'vendor/**'
+      - '.gitmodules'
       - '.github/workflows/android.yml'
   pull_request:
     paths:
@@ -28,6 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
