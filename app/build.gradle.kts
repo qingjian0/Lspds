@@ -1,7 +1,7 @@
 plugins { id("com.android.application") }
 android {
     namespace = "org.qingjian.lspds"
-    compileSdk = 37
+    compileSdk = 36
     defaultConfig {
         applicationId = "org.qingjian.lspds"
         minSdk = 26
