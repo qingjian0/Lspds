@@ -1,63 +1,58 @@
 # Lspds — DeepSeek Android LSPosed Enhancement
 
-> An independent, open-source LSPosed enhancement module for the official DeepSeek Android client (`com.deepseek.chat`).
+> 面向官方 DeepSeek Android 客户端（com.deepseek.chat）的独立 LSPosed 增强模块。
 
-**Status: research and safe-probe baseline (v0.1.0-dev).** This repository is the canonical home for all project code, tests, build configuration, research notes, and release artifacts.
+**项目状态：规划与工程基线阶段（v0.1.0-dev）。** 本仓库是唯一主仓库，集中保存全部代码、测试、构建配置、调研资料、文档和发布产物。
 
-- **Target:** official DeepSeek Android package `com.deepseek.chat`
-- **Initial host profile:** Google Play DeepSeek 2.7.1, versionCode 288
-- **Framework API:** modern libxposed API 102 (compile-only)
-- **Language:** Java 21
-- **Minimum Android:** 8.0 / API 26 (framework API availability still depends on the installed LSPosed build)
-- **License:** GPL-3.0-only
+- 目标宿主：com.deepseek.chat
+- 主语言：Kotlin；Java 仅在必要的兼容/移植场景保留
+- Hook API：现代 libxposed API 102（compileOnly）
+- 当前优先宿主：Google Play DeepSeek 2.7.1（此前样本记录 versionCode 288，待重验）
+- 兼容性原则：渠道、versionCode、签名和 DEX 指纹联合识别；未知版本 fail-closed
+- 项目许可证：GPL-3.0-only
 
-## Current implementation status
+## 当前状态
 
-| Area | Status | Evidence |
-|---|---|---|
-| Modern libxposed module entry | In progress | Project skeleton is being established |
-| Host package and version gate | Planned for first probe | No unsupported build should receive hooks |
-| DeepSeek 2.7.1 request probe | Static candidate only | DEX analysis identifies `Lrx3.g(Lvv1, Long):Lh60`; runtime match is not verified |
-| SSE protocol utility | Planned, independent parser tests first | Main completion parser is not yet proven |
-| Local OpenAI/Anthropic-compatible API | Not implemented | Requires safe, on-device host-adapter validation |
-| Chat editor/history/backup | Not implemented | Requires verified DB schema and transactional tests |
-| Multi-account management | Not implemented | No credential extraction or session-token export |
-| UI customization/app lock | Not implemented | Later phase |
-| APK / device validation | Not yet available | CI and an actual LSPosed device run are required |
+| 领域 | 状态 |
+|---|---|
+| libxposed 入口和模块元数据 | 已建立初始骨架，待 CI 验证 |
+| Kotlin 主代码迁移 | 初始入口、宿主识别、Activity 和测试已迁移 |
+| 宿主识别 | 仅有初始版本号 gate，尚未完成渠道/DEX 指纹 |
+| DeepSeek 请求与 SSE Hook | 未实现；只有静态候选线索 |
+| 对话管理、备份、提示词 | 未实现 |
+| OpenAI 兼容本地 API | 未实现 |
+| APK 和真实设备验证 | 尚未完成 |
 
-Do not interpret a planned feature, DEX symbol, or successful compilation as proof of runtime compatibility.
+不要把静态分析线索、代码提交或 CI 构建成功当作真实设备 Hook 成功。
 
-## Repository layout
+## 规划与技术文档
 
-- `app/` — Android module APK and LSPosed entry
-- `docs/` — architecture, source audit, compatibility matrix and reverse-engineering evidence
-- `scripts/` — reproducible developer utilities
-- `.github/workflows/` — Android build and test automation
+- [项目总体规划与技术决策](docs/PROJECT_PLAN.md)
+- [开源项目扩展调研记录](docs/RESEARCH_EXPANSION.md)
+- [功能规格与验收标准](docs/FEATURE_SPEC.md)
+- [宿主兼容性策略](docs/COMPATIBILITY_STRATEGY.md)
+- [实施路线图](docs/IMPLEMENTATION_ROADMAP.md)
+- [架构说明](docs/ARCHITECTURE.md)
+- [参考项目审计](docs/REFERENCE_AUDIT.md)
+- [DeepSeek 2.7.1 静态分析线索](docs/DEEPSEEK_271_STATIC_FINDINGS.md)
+- [安全与隐私](docs/SECURITY.md)
 
-## Build
+## 构建
 
-The project uses Gradle 9.4.1, Android Gradle Plugin 9.2.1, JDK 21 and Android SDK 37.
+当前构建基线：JDK 21、Gradle 9.4.1、AGP 9.2.1、Android SDK 37。Kotlin 代码以 JDK 17 字节码目标为当前设置，需由 CI 最终验证。
 
-```bash
-gradle --version
-gradle testDebugUnitTest assembleDebug
-```
+构建命令：gradle :app:testDebugUnitTest :app:assembleDebug
 
-The CI workflow installs the required toolchain. A release build must be signed with a user-controlled key; signing keys and passwords must never be committed.
+Release APK 应使用用户自有签名密钥；keystore、密码和 Token 不得提交到仓库。
 
-## Safety and privacy
+## 隐私与安全
 
-- The initial adapter is **observation-only** and fail-closed.
-- Never log prompts, generated answer text, account identifiers, session IDs, cookies, bearer tokens, API keys, passwords, or PoW challenge/solution material.
-- Do not bypass DeepSeek authentication, proof-of-work, rate limits, or server-side access controls.
-- The local API, when implemented, must bind to loopback by default and use an independent module-owned API key. Do not expose the host app's credentials.
-- Database edits and backups must be user-initiated, transactional, restorable, and tested against a copy before production use.
-- Each optional hook must install independently. A missing symbol must not prevent the module from loading.
+- 初始版本保持 observation-only，不安装未经验证的宿主 Hook。
+- 默认不记录提示词、模型回答、账号标识、会话 ID、Cookie、Bearer Token、API Key、密码或 PoW 数据。
+- 不绕过 DeepSeek 登录、PoW、限流、风控或服务端访问控制。
+- 未来本地 API 默认只监听 loopback，并使用模块自有 API Key，不暴露宿主凭据。
+- 数据库编辑和恢复必须用户主动触发、先备份、事务化并可回滚。
 
-## Research sources
+## 免责声明
 
-See [Reference project audit](docs/REFERENCE_AUDIT.md), [DeepSeek 2.7.1 static findings](docs/DEEPSEEK_271_STATIC_FINDINGS.md), [architecture](docs/ARCHITECTURE.md), [compatibility policy](docs/COMPATIBILITY.md), and [roadmap](docs/ROADMAP.md).
-
-## Disclaimer
-
-Lspds is an independent community project and is not affiliated with DeepSeek, LSPosed, or the authors of referenced projects. Use only on devices and application data you own or are authorized to inspect.
+Lspds 是独立社区项目，与 DeepSeek、LSPosed 及参考项目作者无隶属关系。仅在你拥有或获授权的设备和数据上使用。
