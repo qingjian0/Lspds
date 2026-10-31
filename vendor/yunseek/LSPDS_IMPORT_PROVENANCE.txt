@@ -1,0 +1,4 @@
+Imported from https://github.com/ZW-SYS/Deekseep-Custom
+Pinned commit: c315b82451d97e9668e2452992f1a0a2fd4a784a
+Source license: GPL-3.0
+This is a source snapshot; Lspds integration/build validation is tracked separately.
