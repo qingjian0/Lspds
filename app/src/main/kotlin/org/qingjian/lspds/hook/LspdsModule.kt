@@ -3,6 +3,8 @@ package org.qingjian.lspds.hook
 import android.os.Build
 import android.util.Log
 import io.github.libxposed.api.XposedModule
+import io.github.libxposed.api.XposedModuleInterface.ModuleLoadedParam
+import io.github.libxposed.api.XposedModuleInterface.PackageReadyParam
 import org.qingjian.lspds.core.HostProfile
 
 /** Modern libxposed entry. Fail-closed until the target build is runtime-validated. */
