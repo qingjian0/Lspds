@@ -32,6 +32,8 @@
 - [功能规格与验收标准](docs/FEATURE_SPEC.md)
 - [宿主兼容性策略](docs/COMPATIBILITY_STRATEGY.md)
 - [实施路线图](docs/IMPLEMENTATION_ROADMAP.md)
+- [Hook 证据记录模板](docs/HOOK_EVIDENCE_TEMPLATE.md)
+- [第三方许可证与署名清单](docs/THIRD_PARTY_NOTICES.md)
 - [架构说明](docs/ARCHITECTURE.md)
 - [参考项目审计](docs/REFERENCE_AUDIT.md)
 - [DeepSeek 2.7.1 静态分析线索](docs/DEEPSEEK_271_STATIC_FINDINGS.md)
