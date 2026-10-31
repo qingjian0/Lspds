@@ -29,6 +29,7 @@
 
 - [项目总体规划与技术决策](docs/PROJECT_PLAN.md)
 - [开源项目扩展调研记录](docs/RESEARCH_EXPANSION.md)
+- [DeepSeek Hook 深度研究与详细设计](docs/DEEPSEEK_HOOK_DESIGN.md)
 - [功能规格与验收标准](docs/FEATURE_SPEC.md)
 - [宿主兼容性策略](docs/COMPATIBILITY_STRATEGY.md)
 - [实施路线图](docs/IMPLEMENTATION_ROADMAP.md)
