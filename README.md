@@ -36,7 +36,7 @@ Do not interpret a planned feature, DEX symbol, or successful compilation as pro
 
 ## Build
 
-The project uses Gradle 9.5.1, Android Gradle Plugin 9.2.1, JDK 21 and Android SDK 37.
+The project uses Gradle 9.4.1, Android Gradle Plugin 9.2.1, JDK 21 and Android SDK 37.
 
 ```bash
 gradle --version
