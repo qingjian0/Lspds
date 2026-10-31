@@ -67,7 +67,7 @@ jobs:
         run: |
           APK="app/build/outputs/apk/debug/app-debug.apk"
           test -s "$APK"
-          BADGING="$ANDROID_HOME/build-tools/35.0.0/aapt dump badging "$APK""
+          BADGING=$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK")
           echo "$BADGING"
           echo "$BADGING" | grep -F "package: name='com.dsmod.probe' versionCode='37' versionName='1.8.1'"
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
