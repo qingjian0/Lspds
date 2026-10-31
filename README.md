@@ -1,72 +1,171 @@
-# Lspds — DeepSeek Android LSPosed Enhancement
+# YunSeek 1.8.1
 
-> 面向官方 DeepSeek Android 客户端（com.deepseek.chat）的独立 LSPosed 增强模块。
+> 面向 DeepSeek Android 客户端的 LSPosed / Xposed 模块。
+> 基于 Lucian（[@lllucccian](https://github.com/lllucccian)）的开源项目 **Deekseep** 二次开发，由 **张云安（ZW-SYS）** 维护。
+> 完全开源（GPL-3.0）、免费、无联网验证、无水印、无赞助/积分/广场。
 
-**项目状态：YunSeek 底包迁移与工程整合阶段。** 本仓库是唯一主仓库，集中保存全部代码、测试、构建配置、调研资料、文档和发布产物。
-
-- 目标宿主：`com.deepseek.chat`
-- 业务底包：YunSeek 1.8.1（`ZW-SYS/Deekseep-Custom`，GPL-3.0）
-- 开发策略：YunSeek 主干 + 经审计的功能移植 + Kotlin 新增层
-- 代码语言：新增代码优先 Kotlin；已验证的 YunSeek Java Hook 暂时保留，逐步迁移
-- Lspds 模块包名：`org.qingjian.lspds`（不沿用 YunSeek 的 `com.dsmod.probe`）
-- Hook API：现代 libxposed API 102（compileOnly）
-- 兼容性原则：渠道、versionCode、签名和 DEX 指纹联合识别；未知版本 fail-closed
-- 项目许可证：GPL-3.0-only
-
-## 当前底包与宿主范围
-
-YunSeek 1.8.1 README 声明支持国内 DeepSeek 2.7.1/code287、国内 2.7.2/code289、Google Play/国际 2.7.2/code290。Play 2.7.1/code288 不在该支持列表中，必须独立建立 Profile，不能套用国内 code287 的混淆符号。
-
-**重要：确定 YunSeek 为底包不代表源码已经迁入或 APK 已构建。** 当前阶段需要固定上游 commit、盘点源码/依赖/许可，再分批迁移并通过 CI。
-
-## 当前状态
-
-| 领域 | 状态 |
+| 项目 | 值 |
 |---|---|
-| YunSeek 作为业务底包 | 已确定 |
-| 上游来源与 GPL-3.0 | 已核验 |
-| 迁移方案与功能融合矩阵 | 已写入文档 |
-| YunSeek 源码完整迁入 | 未完成 |
-| Gradle / libxposed API 102 整合 | 未验证 |
-| 宿主 287/289/290 Profile 迁移 | 未完成 |
-| Play 288 独立 Profile | 待重新核验 APKS 样本 |
-| 请求/SSE/Agent/附件/会话 Hook | 待迁移和回归 |
-| APK 和真实设备验证 | 尚未完成 |
+| 版本 | **1.8.1**（versionCode **37**） |
+| 包名 | `com.dsmod.probe`（与 Deekseep 相同，可覆盖升级） |
+| 支持宿主 | 国内版 DeepSeek **2.7.1**（code 287）、国内版 **2.7.2**（code 289）、国际/Google Play 版 **2.7.2**（code 290） |
+| 发布形式 | 未签名 + zipalign APK，使用者自行签名 |
+| 许可证 | GPL-3.0 |
 
-不要把静态分析线索、代码提交或 CI 构建成功当作真实设备 Hook 成功。
+> **重要：装过原作者签名版（Deekseep 1.7.x 或 Nexus）的，请先卸载再装本模块**，签名不同无法覆盖安装。
 
-## 规划与技术文档
+---
 
-- [YunSeek 底包迁移与功能融合方案](docs/YUNSEEK_BASELINE_MIGRATION.md)
-- [YunSeek 源码审计与增量移植清单](docs/YUNSEEK_SOURCE_AUDIT.md)
-- [项目总体规划与技术决策](docs/PROJECT_PLAN.md)
-- [开源项目扩展调研记录](docs/RESEARCH_EXPANSION.md)
-- [DeepSeek Hook 深度研究与详细设计](docs/DEEPSEEK_HOOK_DESIGN.md)
-- [功能规格与验收标准](docs/FEATURE_SPEC.md)
-- [宿主兼容性策略](docs/COMPATIBILITY_STRATEGY.md)
-- [实施路线图](docs/IMPLEMENTATION_ROADMAP.md)
-- [Hook 证据记录模板](docs/HOOK_EVIDENCE_TEMPLATE.md)
-- [第三方许可证与署名清单](docs/THIRD_PARTY_NOTICES.md)
-- [架构说明](docs/ARCHITECTURE.md)
-- [参考项目审计](docs/REFERENCE_AUDIT.md)
-- [DeepSeek 2.7.1 静态分析线索](docs/DEEPSEEK_271_STATIC_FINDINGS.md)
-- [安全与隐私](docs/SECURITY.md)
+##维护者说明
 
-## 构建
+- **本版本适配**：国内版 DeepSeek 2.7.1（code 287）、国内版 2.7.2（code 289）、国际 / Google Play 版 2.7.2（code 290），一个 APK 自动识别。
+- **下一个版本 1.8.2**：计划尝试推出 **iOS 版本**（越狱插件 / IPA 注入方案），具体以实际进度为准。
+- **问题反馈**：遇到 Bug 或有建议，请到本项目 GitHub 的 **Issues** 页面反馈、评论，最好附上 DeepSeek 版本号和 LSPosed 日志。
+- **开发时间说明**：本人今年 13 岁，平时要上学，只有周末、礼拜日或放假时才有时间开发，所以更新可能不会很快，请大家理解。
+- **联系邮箱**：有重要的事可以发邮件到 **cranecloud@hotmail.com**。
+- **防骗提醒**：本人**不建任何群**，也**不收任何费用**。如果有人以 YunSeek 名义要求你进群、付费、购买激活码 / 卡密，**都是假的**。YunSeek **100% 开源、免费**。
 
-工程整合阶段构建基线：JDK 21、Gradle 9.4.1、AGP 9.2.1、Android SDK 36。最终版本以迁移后的 Gradle Wrapper 和 CI 实测为准。
+### 本版更新一览
 
-Release APK 应使用用户自有签名密钥；keystore、密码和 Token 不得提交到仓库。
+- 改名 YunSeek，界面全面 Material Design 3（圆角、阴影、Monet 动态取色、深色模式、动画）
+- 桌面 App 重做：修复图标点不开，新首页（激活卡片 + 功能分类），数据中心一键导入导出
+- 模块内设置页重新设计，删除水印、交流群、卡密验证、自动更新检查
+- 新增：本地提示词库、模型显示名（闪电 / 深思）、会话置顶、单条消息导出、快捷复制、隐藏对话、应用锁、后台防窥、防截屏、纯黑模式、渐变壁纸、自定义字体、液态玻璃输入框
+- Agent 保留半自动和限速，剪贴板工具默认关闭
 
-## 隐私与安全
+---
 
-- 未验证的宿主版本不安装业务 Hook。
-- 默认不记录提示词、模型回答、账号标识、会话 ID、Cookie、Bearer Token、API Key、密码或 PoW 数据。
-- 不绕过 DeepSeek 登录、PoW、限流、风控或服务端访问控制。
-- Local API 默认只监听 loopback，并使用模块自有 API Key，不暴露宿主凭据。
-- 数据库编辑和恢复必须用户主动触发、先备份、事务化并可回滚。
-- Agent 默认半自动；发送、删除、写入等动作需用户确认。
+## 一、为什么要改名、为什么是一次大改
+
+1.8.0 之前，这个分支只是把原版 Deekseep 的钩子“搬”到 DeepSeek 2.7.1 上：按源码行数统计，约 97% 仍是原作者代码，移植改动约 3%。到了 1.8.1，情况变了：
+
+1. **宿主大换血。** DeepSeek 2.7.2 国内版和国际版的混淆类名几乎全部重排（与 2.7.1 相同的类只剩约 1%–2%，国内版和国际版之间也不同）。旧的单一映射表完全不能用，必须为每个版本单独生成映射，再改写宿主识别逻辑。
+2. **原作者的路线已经转向闭源。** 原作者后来在内测 **Nexus**（如 Nexus 1.7.6，适配宿主 2.5.3）：**闭源、带水印**，并加入了账号广场、绕风控、登录/地区解锁等功能。这些不是本项目想要的方向。
+3. **想要一个干净、能长期维护的版本。** 去掉商业化和联网入口，守住安全底线，界面和功能按自己的思路重做。
+
+所以从 1.8.1 起独立命名为 **YunSeek**。说明三点：
+
+- **YunSeek 没有使用 Nexus 的任何代码。** Nexus 是闭源的，本项目只参考了它“激活卡片 + 功能分类”的公开界面思路，所有界面和功能都是独立重写。
+- **YunSeek 不做 Nexus 的绕风控、登录解锁、账号广场等功能**，以后也不会做。
+- **底层仍继承 Deekseep 的开源代码**，原作者署名、LICENSE、致谢全部保留（见第六节）。
+
+---
+
+## 二、1.8.1 相比 1.8.0 改了什么
+
+### 1. 多宿主适配（一个 APK 通吃）
+
+- 启动时根据宿主特征类自动识别 **287 / 289 / 290**，分别加载 `hostmap287/289/290.txt.gz` 三张映射表。
+- 2.7.2 映射：自动结构比对约 7600+ 个类；原 36 条手工方法映射迁移了 28 条，其余 8 条（个别 Compose 界面组件）找不到可信对应时**自动关闭**，不会误挂钩。
+- 原来写死的 2.7.1 类名和资源 ID 改为按宿主翻译，或在运行时按资源名查找。
+- 未知版本一律安全禁用，不乱挂钩。
+
+### 2. 桌面 App 重做
+
+- **修复桌面图标点不开**：原因是 Open 版首页读取空的设备信息直接空指针闪退。
+- 新首页：激活状态大卡片（显示模块版本、识别到的 DeepSeek 版本/渠道）+ 8 个功能分类（聊天、界面美化、Agent、提示词库、会话工具、数据、调试、帮助）。
+- Material Design 3 + **Monet 动态取色**（Android 12+），深色模式适配。
+- 动画：卡片依次滑入、状态卡流动渐变和光晕、按压缩放、页面切换动画。
+- 可在桌面 App 里直接查看和修改部分设置（需 DeepSeek 在运行），**重启 DeepSeek 后生效**。
+
+### 3. 数据中心（导入导出合一）
+
+- 默认导出 **ZIP**（设置 + 桌面 App 数据 + 说明文件），可选 **JSON**（仅设置）。
+- 一键导入恢复，自动识别 ZIP / JSON。
+- 原来分散的“配置导入导出”“备份恢复”入口都合并到这里。适合跨大版本重装时迁移。
+
+### 4. 模块内界面全面 M3 化
+
+- 所有显示名改为 YunSeek（包名、类名、存储路径、偏好键不变，保证升级不丢配置）。
+- 24dp 圆角卡片、阴影、描边、M3 开关（带动画）、药丸形搜索框、行入场动画、页面滑动切换。
+- 删除交流群入口、原作者留言页、卡密验证、自动更新检查（会把用户引向原作者的签名包）。
+
+### 5. 新增功能
+
+| 功能 | 说明 |
+|---|---|
+| 本地提示词库 | 通用 / 代码审查 / 写作 / 翻译 / 我的，内置 20+ 条，可增删改；一键写入并开启提示词注入 |
+| 模型显示名 | 界面上 快速→**闪电**、深度思考→**深思**（默认开启，可自定义）。**只改屏幕文字，不改任何请求参数和模型 ID** |
+| 会话置顶 | 模块本地记录，不写 DeepSeek 数据库 |
+| 单条消息导出 | 导出 .md / .txt、复制、分享 |
+| 快捷复制 | “复制纯文本”（去掉 Markdown）和“提取代码”（只复制代码块） |
+| 隐藏对话 | 在会话工具中隐藏指定对话；“显示隐藏对话”需 PIN 或指纹（目前 DeepSeek 原生侧栏中仍可见） |
+| 应用锁 | 指纹 / 锁屏密码，或本地 4–6 位 PIN（加盐 SHA-256，仅存本机）；可设离开 0 / 1 / 5 分钟后上锁 |
+| 后台防窥 | 多任务界面不显示聊天内容（Android 13+ 用系统接口，旧版用遮罩） |
+| 防截屏 | 开启后聊天界面禁止截屏 / 录屏 |
+| 纯黑 AMOLED | 深色模式下背景改纯黑 |
+| M3 渐变壁纸 | 6 款代码绘制的渐变背景（3 款跟随 Monet），一键设为聊天背景 |
+| 自定义字体 | 导入本地 .ttf / .otf，重启后全局生效（部分 ROM 可能不支持） |
+| 液态玻璃输入框 / 输入框磨砂背景 | 默认关闭，出错自动不生效 |
+
+### 6. 保留并优化
+
+- **Agent**：默认**半自动**（工具结果需确认后才发送），全自动需勾选风险同意；**限速**：两步至少间隔 8 秒、每分钟最多 5 步、每小时最多 60 步。
+- **剪贴板工具**：修正为**默认关闭**（之前实际上是默认开启）。
+- 字体大小调节、防撤回（灰色 + 安全警告 + 阅读同意门槛）等原有功能保留。
+
+---
+
+## 三、安全底线（不做，也不会做）
+
+以下功能在 YunSeek 中**入口已删除、代码层硬关闭**（`HARD_LINES_ENABLED = false`），即使加同意弹窗也不做：
+
+- 密码 / 注册信息捕获
+- 风控 SDK 绕过
+- Android ID / OAID 等设备指纹伪装
+- 地区解锁、登录解锁
+- 额度 / 专家解锁、防封
+- 给 Agent 做伪装以躲避检测
+
+本模块**没有任何联网验证**，也不上传任何数据。
+
+---
+
+## 四、已知限制
+
+- 2.7.2（289/290）目前只做了沙盒映射校验，**尚未在真机上全面测试**，部分界面钩子可能不生效（会自动关闭，不会闪退）。
+- 桌面 App 修改设置需要 DeepSeek 正在运行；开关类设置只能在 DeepSeek 内修改。
+- ZIP 导出暂不包含提示词库、置顶和聊天记录。
+- 隐藏对话暂时无法从 DeepSeek 原生侧栏中隐藏。
+- 液态玻璃输入框可能碰不到 2.7.x 的 Compose 输入框。
+- iOS 版本计划在 1.8.2 尝试推出（越狱插件 / IPA 注入方案）。
+
+---
+
+## 五、构建
+
+```bash
+bash scripts/build-all.sh
+```
+
+- 输出：`out/YunSeek-1.8.1-unsigned-aligned.apk` 和 `out/SHA256.txt`
+- 脚本结束时会用 `apksigner` 确认 APK **不带任何签名**（包括 debug 签名）。
+- 原多模块构建流程保留为 `scripts/build-all-legacy.sh`。
+- 重新生成宿主映射：`bash host/map/multi.sh <versionCode> <宿主APK>`（宿主 APK 不随仓库提供）。
+
+自行签名示例：
+
+```bash
+apksigner sign --ks 你的.jks --out YunSeek-1.8.1-signed.apk out/YunSeek-1.8.1-unsigned-aligned.apk
+```
+
+---
+
+## 六、许可与致谢
+
+- 本项目以 **GPL-3.0** 发布，衍生作品须同样开源。完整文本见 [LICENSE](LICENSE)。
+- **原作者：Lucian（@lllucccian）**，开源项目 Deekseep 的作者。YunSeek 的底层钩子体系大部分来自他的工作，在此致谢。原版文档存档于 [docs/upstream/](docs/upstream/)。
+- **YunSeek 维护：张云安（ZW-SYS）**：多宿主移植、界面重构与新功能。
+- 原作者后续的 **Nexus** 为闭源版本，与本项目无代码关系。
+- 第三方组件声明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+- 本项目**开源、免费**，任何人以本项目收费均与维护者无关。
+
+## 七、文档
+
+- [安装](docs/INSTALLATION.md) · [构建](docs/BUILDING.md) · [功能范围](docs/FEATURES.md) · [常见问题](docs/TROUBLESHOOTING.md)
+- [更新日志](CHANGELOG.md) · [参与贡献](CONTRIBUTING.md) · [安全策略](SECURITY.md)
+- [移植笔记](PORT_NOTES.md)
 
 ## 免责声明
 
-Lspds 是独立社区项目，与 DeepSeek、LSPosed 及参考项目作者无隶属关系。仅在你拥有或获授权的设备和数据上使用。
+本项目仅供学习与研究。使用模块修改官方 App 行为可能违反 DeepSeek 用户协议，由此产生的账号或其他后果由使用者自行承担。详见 [DISCLAIMER.md](DISCLAIMER.md)。
