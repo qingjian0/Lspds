@@ -181,3 +181,20 @@
 ### I-6. 本轮检索边界
 
 本轮已核对 GitHub 仓库 API 的 fork、parent/source 和 SPDX license 元数据，并抽查了 README、SOURCE_URL、FEATURES 等文件。GitHub SPDX 元数据不等于法律审查，也未对每个仓库做完整 git diff。Stars、更新时间和 README 的功能宣称会变化，正式采用前仍需固定 commit SHA 并复核源码。所有功能描述均是“项目文档声称/源码中可见”，不是 Lspds 已实现或真机验证结果。
+
+
+## J. 关键 Hook 类与版本映射源码审阅补充
+
+2026-10-31 进一步固定了以下源码快照并检查关键方法：
+
+- YunSeek `HostCompat.java`：2.7.1/code287 的候选类 `sx1` + marker `du1`；2.7.2/code289 的 `ly1` + `wu1`；国际/Google Play code290 的 `c02` + `nw1`。2.5.0 GP 分支候选 request `r51`、edit request `s41`、repository `b18` 的方法 I/J，但源码注释明确限制了已验证范围。
+- YunSeek `HostV271.java`：仅 code287；请求类 `sx1`（serializer `qx1`），历史响应 `ey1`（serializer `cy1`），消息 `gy`，fragment `v9a`；设置页 analytics 候选 `gt0.Q(...)`。
+- YunSeek `HookChatPipeline.java`：真实 completion request 构造器 hook；普通构造器 prompt index 2；synthetic serialization constructor 被跳过；本地 API 请求通过 ThreadLocal 标记跳过 UI prompt 注入。
+- Deekseep `HookAgentPipeline.java`：Agent 工具状态、Compose/Canvas 绘制、触摸手势、无障碍语义节点和详情 UI。
+- Deekseep `HookAttachmentPipeline.java`：模型文件卡片、图片/附件路径、专家模式相关对象与历史消息保留。
+- Deekseep `HookSessionManagement.java`：Compose 侧栏会话、原生点击 callback、多选、删除、当前 session repository 与本地会话合并。
+- Deekseep `HookUiSurface.java`：原生设置入口、消息气泡、输入区与 Compose UI 表面。
+- com.dsmod.probe `LocalApiGateway.java`：Backend/CompletionRequest/CompletionResult/DeltaSink、ServerSocket、SSE 状态、超时、取消和 response state。
+- DeepTranslate `DeepTranslateModule.kt` / `TextViewHook.kt` / `TextBatcher.kt`：现代 Kotlin 模块生命周期、精确 overload Hook、弱引用 UI 更新、队列批处理。
+
+注意：上述符号只在对应来源项目和对应宿主版本语境下成立。特别是 code287 的 `sx1` 不可用于 code288。所有细节、证据级别、风险和 Lspds 设计见 [DEEPSEEK_HOOK_DESIGN.md](DEEPSEEK_HOOK_DESIGN.md)。
