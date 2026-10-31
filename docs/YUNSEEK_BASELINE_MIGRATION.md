@@ -132,7 +132,11 @@ YunSeek 当前模块包名为 `com.dsmod.probe`，Lspds 现有模块包名为 `o
 
 验收：各功能独立开关；不支持的宿主能力自动禁用；真实设备回归后才标记稳定。
 
-## 8. 当前未完成事项
+## 8. 源码审计进展
+
+已完成第一轮固定 commit 的源码目录与关键类静态审计，见 [YUNSEEK_SOURCE_AUDIT.md](YUNSEEK_SOURCE_AUDIT.md)。审计确认 YunSeek 的 Hook 核心通过传统 Xposed adapter 承载，而 Lspds 当前骨架使用现代 libxposed API 102；二者必须通过独立适配层整合，不能简单复制 Java 文件。289/290 虽有独立映射表，但公开移植笔记仍列有方法重定位、verifier 和真机验证待办。
+
+## 9. 当前未完成事项
 
 - [ ] YunSeek 源码尚未完整迁入 Lspds。
 - [ ] 尚未锁定 YunSeek 的具体 commit SHA 作为本项目 vendor 基线。
@@ -141,7 +145,7 @@ YunSeek 当前模块包名为 `com.dsmod.probe`，Lspds 现有模块包名为 `o
 - [ ] 尚未完成 Lspds APK 构建、安装和 LSPosed 真机测试。
 - [ ] 上述功能矩阵均为迁移计划，不是已实现清单。
 
-## 9. 上游来源
+## 10. 上游来源
 
 - YunSeek：<https://github.com/ZW-SYS/Deekseep-Custom>
 - Deekseep 上游：<https://github.com/lllucccian/Deekseep>
