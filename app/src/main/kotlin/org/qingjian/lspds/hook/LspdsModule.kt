@@ -1,5 +1,6 @@
 package org.qingjian.lspds.hook
 
+import android.os.Build
 import android.util.Log
 import io.github.libxposed.api.XposedModule
 import org.qingjian.lspds.core.HostProfile
@@ -21,7 +22,7 @@ class LspdsModule : XposedModule() {
             val appInfo = param.applicationInfo
             HostProfile.inspect(
                 path = appInfo.sourceDir,
-                code = appInfo.longVersionCode,
+                code = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) appInfo.longVersionCode else appInfo.versionCode.toLong(),
                 name = appInfo.versionName
             )
         }.onSuccess { profile ->
