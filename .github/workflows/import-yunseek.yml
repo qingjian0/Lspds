@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - integration/yunseek-1.8.1
+      - main
     paths:
       - .github/workflows/import-yunseek.yml
   workflow_dispatch:
@@ -19,7 +20,7 @@ jobs:
   import-source:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Lspds integration branch
+      - name: Checkout Lspds branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
