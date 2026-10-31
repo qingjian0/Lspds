@@ -23,7 +23,7 @@ YunSeek 1.8.1 README 声明支持国内 DeepSeek 2.7.1/code287、国内 2.7.2/co
 
 | 领域 | 状态 |
 |---|---|
-| YunSeek 作为业务底包 | <badge color="success">已确定</badge> |
+| YunSeek 作为业务底包 | 已确定 |
 | 上游来源与 GPL-3.0 | 已核验 |
 | 迁移方案与功能融合矩阵 | 已写入文档 |
 | YunSeek 源码完整迁入 | 未完成 |
