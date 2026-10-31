@@ -245,7 +245,7 @@ val stageRuntimeResources = tasks.register<Sync>("stageRuntimeResources") {
 
 android {
     namespace = "com.dsmod.probe"
-    compileSdk = 37
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.dsmod.probe"
