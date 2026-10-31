@@ -1,6 +1,5 @@
 package org.qingjian.lspds.hook
 
-import android.os.Build
 import android.util.Log
 import io.github.libxposed.api.XposedModule
 import org.qingjian.lspds.core.HostProfile
@@ -20,10 +19,12 @@ class LspdsModule : XposedModule() {
 
         runCatching {
             val appInfo = param.getApplicationInfo()
+            // PackageReadyParam exposes ApplicationInfo, not PackageInfo. Defer versionCode
+            // resolution until a Context is available; do not guess from an ApplicationInfo.
             HostProfile.inspect(
                 path = appInfo.sourceDir,
-                code = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) appInfo.longVersionCode else appInfo.versionCode.toLong(),
-                name = appInfo.versionName
+                code = -1L,
+                name = "pending-context"
             )
         }.onSuccess { profile ->
             log(Log.INFO, TAG, "Host identified: $profile")
