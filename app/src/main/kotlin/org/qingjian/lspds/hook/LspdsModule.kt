@@ -11,7 +11,7 @@ class LspdsModule : XposedModule() {
         log(
             Log.INFO,
             TAG,
-            "Loaded process=${param.getProcessName()}, framework=${frameworkName}, api=${apiVersion}"
+            "Loaded process=${param.getProcessName()}, framework=${getFrameworkName()}, api=${getApiVersion()}"
         )
     }
 
