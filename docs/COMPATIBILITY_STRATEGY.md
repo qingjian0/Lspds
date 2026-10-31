@@ -88,3 +88,19 @@ APK、APKS、DEX、反编译完整输出和数据库文件不放进公开仓库�
 - 数据写入前创建可校验备份；恢复失败原子回滚。
 - 用户可从模块 APK 设置或 LSPosed 中关闭模块。
 - 不做隐藏自身、持久化对抗卸载或阻止用户停用的行为。
+
+
+## 8. 2026-10-31 扩展版本线索
+
+YunSeek `HostCompat.java` 与 README 本轮源码审阅记录：
+- 国内 2.7.1/code287：候选 completion request `sx1` + marker interface `du1`。
+- 国内 2.7.2/code289：候选 completion request `ly1` + marker interface `wu1`。
+- 国际/Google Play 2.7.2/code290：候选 completion request `c02` + marker interface `nw1`。
+- 2.5.0 GP/code268：候选 request `r51`、edit request `s41`、repository `b18`，但该项目注释明确指出其他 2.5.0 功能符号尚未全部验证。
+- 用户提供的 Play 2.7.1/code288 与国内 2.7.1/code287 分离建档。
+
+YunSeek README 自述 2.7.2 映射约比对 7600+ 类，36 条人工方法映射迁移 28 条，另外 8 条无法可靠定位的 Hook 自动关闭；其文档同时指出 2.7.2 尚未完成真机全面测试。这是“未知能力自动禁用”的设计参考，不是 Lspds 对 code289/290 的支持声明。
+
+第三方 APK 索引在 2026-10-30 出现 2.7.3/code292，但页面显示包名 `com.deepseek.chat.nov`。本项目目标仍是 `com.deepseek.chat`，在取得并核验精确目标包的 APK/APKS、签名和 DEX 前，不建立 code292 Profile。
+
+详见 [DEEPSEEK_HOOK_DESIGN.md](DEEPSEEK_HOOK_DESIGN.md)。
