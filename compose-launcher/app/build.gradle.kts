@@ -330,6 +330,17 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    // Publish two independently installable APKs: 64-bit ARM and 32-bit ARM.
+    // Each APK contains only the matching ABI's native libraries.
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("arm64-v8a", "armeabi-v7a")
+            isUniversalApk = false
+        }
+    }
+
     packaging {
         jniLibs.useLegacyPackaging = true
         resources.excludes += setOf(
