@@ -1,34 +1,33 @@
-# Reference project audit
+# 参考项目审计入口
 
-Audit performed 2026-10-31 against public GitHub repository metadata and source trees. Repository existence is verified; detailed feature claims are limited to files actually inspected.
+本文件保留早期参考清单。扩展后的仓库地址、许可证元数据、fork 关系、已检查文件和移植建议统一见 RESEARCH_EXPANSION.md。
 
-| Repository | Relationship / license evidence | Research value | Caveat |
-|---|---|---|---|
-| lllucccian/Deekseep | Standalone; GPL-3.0 reported by GitHub | DeepSeek host compatibility and generation mapping | Existing mappings target older 2.x hosts |
-| ZW-SYS/Deekseep-Custom | Standalone; GPL-3.0 reported | YunSeek customization | Audit changed files and provenance before copying |
-| qingjian0/GLMKit | Fork; parent Sliverkiss/GLMKit; source yuzchu/GLMKit | Feature decomposition and local API concepts | Fork status verified |
-| hxreborn/Deekseep | Public repository | Alternate DeepSeek implementation | Full source-path audit pending |
-| Xposed-Modules-Repo/com.dsmod.probe | Public repository | Probe and diagnostics | Release/source lineage audit pending |
-| LSPosed/LSPosed | GPL-3.0 | Framework behavior | Framework, not an app dependency |
-| libxposed/api | Modern API | Typed interceptor-chain Hook API | API version must match framework |
-| libxposed/example | Official example | Entry metadata and lifecycle | Keep metadata aligned with API target |
-| HighCapable/YukiHookAPI | Public | Higher-level Hook abstraction | Adds dependency and compatibility cost |
-| HighCapable/YukiHook | Public | Hook utilities | Audit exact release before use |
-| LSPosed/LSPlugin | Public | Plugin architecture concepts | Not interchangeable with an Xposed module |
-| errorman-awful/Dexterceptor | Public | Dex inspection/interception research | Verify maintenance and license |
-| Familyye/HttpInterceptor | Public | HTTP instrumentation concepts | Does not prove DeepSeek transport |
-| winhok/net-tap | Public | Multi-stack network instrumentation | Identify transport per host version |
-| linuxwff789/wxbackup | Public | Backup workflow ideas | WeChat schema is not portable |
-| Ianzb/HyperRefine | Public | Android UI/settings patterns | Not a DeepSeek hook source |
-| MeiYongAI/Toki | Public | Host scanning and runtime organization | Audit dependencies and license |
-| hxreborn/biometric-app-lock | Public | App-lock behavior | Permission and biometric UX need separate design |
-| ZJF-Kedaya/Deekseep-fork | Public | Derivative comparison | Fork lineage and delta need full diff |
-| zjkkzk/Deekseep22222 | Public | Derivative comparison | Fork lineage and delta need full diff |
+## 核心参考
 
-## Technical conclusions
+- lllucccian/Deekseep：原始 DeepSeek Xposed 上游，GPL-3.0。
+- ZW-SYS/Deekseep-Custom（YunSeek）：基于 Deekseep 的 GPL-3.0 衍生项目，公开说明 2.7.x 国内/Play 渠道映射。
+- qingjian0/GLMKit：用户维护的 GLMKit fork，parent 为 Sliverkiss/GLMKit，source 为 yuzchu/GLMKit。
+- hxreborn/Deekseep：现代 API 102、传统 API、诊断和功能模块参考，GitHub 元数据报告 MIT。
+- Xposed-Modules-Repo/com.dsmod.probe：Deekseep 相关发布仓库，GitHub 元数据报告 MIT。
 
-- Modern libxposed uses META-INF/xposed/java_init.list, module.prop and scope.list. Entry classes extend XposedModule and initialize in lifecycle callbacks. Hooks use a typed interceptor-chain model.
-- The LSPosed modern API guide documents capability negotiation and per-hook configuration. Do not mix legacy XposedBridge calls into an API 102 module.
-- Deekseep HostCompat demonstrates why versioned mappings and fail-closed behavior matter: it checks concrete class and method contracts instead of assuming all releases share one obfuscated table.
-- Do not assume OkHttp is the only transport. Network instrumentation must identify the actual stack first.
-- GPL compatibility and attribution must be checked file-by-file before porting. A top-level repository license does not automatically clear vendored dependencies.
+## 框架和辅助项目
+
+- LSPosed/LSPosed
+- libxposed/api
+- libxposed/example
+- HighCapable/YukiHookAPI
+- HighCapable/YukiHook
+- LSPosed/LSPlugin
+- errorman-awful/Dexterceptor
+- Familyye/HttpInterceptor
+- winhok/net-tap
+- linuxwff789/wxbackup
+- Ianzb/HyperRefine
+- MeiYongAI/Toki
+- hxreborn/biometric-app-lock
+- ZJF-Kedaya/Deekseep-fork
+- zjkkzk/Deekseep22222
+
+## 许可证提示
+
+仓库级许可证元数据不替代逐文件审查。未声明许可证的项目仅可研究，不得复制代码。所有移植必须保留作者、版权、LICENSE/NOTICE 和修改记录。
