@@ -3,25 +3,23 @@ package org.qingjian.lspds.hook
 import android.os.Build
 import android.util.Log
 import io.github.libxposed.api.XposedModule
-import io.github.libxposed.api.XposedModuleInterface.ModuleLoadedParam
-import io.github.libxposed.api.XposedModuleInterface.PackageReadyParam
 import org.qingjian.lspds.core.HostProfile
 
 /** Modern libxposed entry. Fail-closed until the target build is runtime-validated. */
 class LspdsModule : XposedModule() {
-    override fun onModuleLoaded(param: ModuleLoadedParam) {
+    override fun onModuleLoaded(param: io.github.libxposed.api.XposedModuleInterface.ModuleLoadedParam) {
         log(
             Log.INFO,
             TAG,
-            "Loaded process=${param.processName}, framework=${frameworkName}, api=${apiVersion}"
+            "Loaded process=${param.getProcessName()}, framework=${frameworkName}, api=${apiVersion}"
         )
     }
 
-    override fun onPackageReady(param: PackageReadyParam) {
-        if (param.packageName != HostProfile.PACKAGE_NAME) return
+    override fun onPackageReady(param: io.github.libxposed.api.XposedModuleInterface.PackageReadyParam) {
+        if (param.getPackageName() != HostProfile.PACKAGE_NAME) return
 
         runCatching {
-            val appInfo = param.applicationInfo
+            val appInfo = param.getApplicationInfo()
             HostProfile.inspect(
                 path = appInfo.sourceDir,
                 code = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) appInfo.longVersionCode else appInfo.versionCode.toLong(),
