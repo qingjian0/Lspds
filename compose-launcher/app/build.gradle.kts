@@ -78,17 +78,35 @@ fun closedSigningValue(name: String): String {
 val signingKeyFile = if (protectedDistribution) {
     File(closedSigningPropertiesFile.parentFile, closedSigningValue("storeFile")).path
 } else {
-    providers.gradleProperty("signingKeyFile").orElse("../../module/debug.keystore").get()
+    providers.gradleProperty("signingKeyFile")
+        .orElse(providers.environmentVariable("DSH_SIGNING_KEYSTORE"))
+        .orElse("../../module/debug.keystore")
+        .get()
 }
 val signingStorePassword = if (protectedDistribution) {
     closedSigningValue("storePassword")
-} else "android"
+} else {
+    providers.gradleProperty("signingStorePassword")
+        .orElse(providers.environmentVariable("DSH_SIGNING_STORE_PASSWORD"))
+        .orElse("android")
+        .get()
+}
 val signingKeyAlias = if (protectedDistribution) {
     closedSigningValue("keyAlias")
-} else "androiddebugkey"
+} else {
+    providers.gradleProperty("signingKeyAlias")
+        .orElse(providers.environmentVariable("DSH_SIGNING_KEY_ALIAS"))
+        .orElse("androiddebugkey")
+        .get()
+}
 val signingKeyPassword = if (protectedDistribution) {
     closedSigningValue("keyPassword")
-} else "android"
+} else {
+    providers.gradleProperty("signingKeyPassword")
+        .orElse(providers.environmentVariable("DSH_SIGNING_KEY_PASSWORD"))
+        .orElse("android")
+        .get()
+}
 
 // The official Material extended-icons AAR contains more than eleven thousand generated icon
 // classes. This launcher uses exactly six of them. Keep the original Google-compiled bytecode for
