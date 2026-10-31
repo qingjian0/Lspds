@@ -78,17 +78,26 @@ fun closedSigningValue(name: String): String {
 val signingKeyFile = if (protectedDistribution) {
     File(closedSigningPropertiesFile.parentFile, closedSigningValue("storeFile")).path
 } else {
-    providers.gradleProperty("signingKeyFile").orElse("../../module/debug.keystore").get()
+    providers.environmentVariable("RELEASE_KEYSTORE_PATH")
+        .orElse(providers.gradleProperty("signingKeyFile"))
+        .orElse("../../module/debug.keystore")
+        .get()
 }
 val signingStorePassword = if (protectedDistribution) {
     closedSigningValue("storePassword")
-} else "android"
+} else {
+    providers.environmentVariable("RELEASE_KEYSTORE_PASSWORD").orElse("android").get()
+}
 val signingKeyAlias = if (protectedDistribution) {
     closedSigningValue("keyAlias")
-} else "androiddebugkey"
+} else {
+    providers.environmentVariable("RELEASE_KEY_ALIAS").orElse("androiddebugkey").get()
+}
 val signingKeyPassword = if (protectedDistribution) {
     closedSigningValue("keyPassword")
-} else "android"
+} else {
+    providers.environmentVariable("RELEASE_KEY_PASSWORD").orElse("android").get()
+}
 
 // The official Material extended-icons AAR contains more than eleven thousand generated icon
 // classes. This launcher uses exactly six of them. Keep the original Google-compiled bytecode for
@@ -236,7 +245,7 @@ val stageRuntimeResources = tasks.register<Sync>("stageRuntimeResources") {
 
 android {
     namespace = "com.dsmod.probe"
-    compileSdk = 37
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.dsmod.probe"
