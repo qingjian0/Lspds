@@ -72,3 +72,38 @@
 4. 未声明许可证的仓库只允许研究，不复制源代码。
 5. GitHub fork 的 parent/source 字段只证明仓库关系，不证明 fork 中每个文件的来源；必须查看 git diff、文件版权头和历史。
 6. 公开仓库不提交 DeepSeek APK/APKS、DEX、反编译完整源码、真实聊天数据库、账号资料、密钥或设备日志。
+
+
+## G. 已检查源码的结构性观察
+
+### YunSeek / Deekseep 2.7.1 国内版适配线索
+
+对 ZW-SYS/Deekseep-Custom 的 README、HostV271.java、HostCompat.java 和 HookChatPipeline.java 做了源码级抽样检查：
+
+- HostV271.java 注释明确限定为国内版 DeepSeek 2.7.1（versionCode 287），不能直接外推到 Play 版 code 288。
+- 该文件说明其 2.7.1 适配是通过 kotlinx.serialization serial name、analytics 字符串和精确构造器/方法签名等稳定锚点定位，而非直接从国内 2.4.1 APK 做完整结构 diff。
+- 注释列出的候选结构包括 ChatFullCompletionRequest（sx1，serializer qx1）、ChatHistoryMessagesResponseBizData（ey1）、AppStaticMessage（gy）以及 RequestFragment（v9a）；历史消息字段和片段字段也有明确描述。
+- HookChatPipeline.java 包含请求构造、SSE 事件观察、会话处理、历史/消息逻辑和 Local API 连接点；其规模较大，适合拆分为独立 Kotlin feature adapter，而不是整文件搬运。
+- 该项目的部分路径会对宿主 SQLite 数据执行写操作。Lspds 不应直接照搬写库行为，必须先独立验证 schema、事务、WAL 和恢复。
+
+### GLMKit 本地 API 架构观察
+
+对 qingjian0/GLMKit 的 LocalApiGateway.java 和 GlmBackend.java 做了抽样检查：
+
+- Gateway 与后端通过 Backend、CompletionRequest、CompletionResult、DeltaSink 等边界分离。
+- Gateway 负责本地 HTTP/JSON/SSE 接口，Backend 负责把兼容请求转换为宿主请求并解析响应。
+- 代码包含 Chat Completions、Responses 和 Anthropic Messages 等不同输入转换路径，以及独立的 SSE emitter。
+- 其实现包含 ServerSocket 监听和多个流式事件发射器，适合借鉴“协议入口与宿主适配器分离”的架构。
+- GlmBackend 中发现了直接记录 Authorization token 前缀的日志语句。Lspds 明确禁止这种行为，不复制该日志方式，也不输出宿主凭据。
+
+以上属于源码抽样观察，不等于该代码已经通过 Lspds 的安全、兼容或性能审查。
+
+## H. 参考项目的优先审阅顺序
+
+1. YunSeek：HostV271、HostCompat、HostRemap、HookChatPipeline、数据备份、提示词和设置导出。
+2. 原始 Deekseep：上游来源、历史兼容矩阵、LICENSE、符号映射和功能差异。
+3. GLMKit：LocalApiGateway、GlmBackend、OpenAiToolBridge、数据存储和线程/取消管理。
+4. libxposed API / example：生命周期、HookBuilder、HookHandle、入口 metadata、R8 keep rules。
+5. net-tap / Dexterceptor / HttpInterceptor：传输层发现和流式响应读取，明确排除 TLS key logging 与 SSL pinning bypass。
+6. YukiHook / EzHookTool / DexKit：做独立 spike 后再决定是否引入依赖。
+7. Toki / WOMMO / biometric-app-lock / HyperRefine：模块 UI、Kotlin 结构和应用锁。
