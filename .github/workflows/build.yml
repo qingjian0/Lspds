@@ -1,24 +1,23 @@
-name: Build 1.7.4 Fix source edition
+name: Validate Deekseep-Custom Gradle build
 
 on:
   push:
-    branches: [main]
-  pull_request:
+    branches:
+      - build/validate-deekseep-gradle-20261031
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  build:
+  build-open-debug:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-
+    timeout-minutes: 45
     steps:
       - name: Check out source
         uses: actions/checkout@v7
 
-      - name: Set up Java
+      - name: Set up Java 17
         uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -27,11 +26,17 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
 
-      - name: Install Android platform and build tools
+      - name: Install Android SDK Platform 35 and Build Tools
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Set up Gradle 9.8.2
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          gradle-version: "9.8.2"
 
       - name: Prepare local debug signing key
         run: |
+          mkdir -p module
           keytool -genkeypair -v \
             -keystore module/debug.keystore \
             -storepass android -keypass android \
@@ -39,13 +44,41 @@ jobs:
             -dname 'CN=Android Debug,O=Android,C=US' \
             -keyalg RSA -keysize 2048 -validity 10000
 
-      - name: Build and test source edition
-        run: bash scripts/build-all.sh
+      - name: Apply runner-only SDK compatibility override
+        working-directory: compose-launcher
+        run: |
+          # The mirrored upstream declares compileSdk 37, which is not available
+          # on the GitHub-hosted runner SDK image used for this validation.
+          # Keep repository sources unchanged; use installed API 35 for this CI run.
+          sed -i 's/compileSdk = 37/compileSdk = 35/' app/build.gradle.kts
+          grep -n 'compileSdk = 35' app/build.gradle.kts
 
-      - name: Upload APKs and checksums
+      - name: Build Open debug APK using the documented Gradle project task
+        working-directory: compose-launcher
+        run: |
+          gradle --no-daemon --stacktrace \
+            -PprotectedBuild=false \
+            -PlocalApiIncluded=false \
+            -Pandroid.aapt2FromMavenOverride="$ANDROID_HOME/build-tools/35.0.0/aapt2" \
+            :app:assembleDebug
+
+      - name: Verify APK package and version
+        working-directory: compose-launcher
+        run: |
+          APK="app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$APK"
+          BADGING="$ANDROID_HOME/build-tools/35.0.0/aapt dump badging "$APK""
+          echo "$BADGING"
+          echo "$BADGING" | grep -F "package: name='com.dsmod.probe' versionCode='37' versionName='1.8.1'"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
+          sha256sum "$APK" | tee app/build/outputs/apk/debug/SHA256SUMS.txt
+
+      - name: Upload validated debug APK
         uses: actions/upload-artifact@v7
         with:
-          name: deekseep-source-edition-v1.7.4-fix
-          path: dist/
+          name: YunSeek-1.8.1-open-debug-validation
+          path: |
+            compose-launcher/app/build/outputs/apk/debug/app-debug.apk
+            compose-launcher/app/build/outputs/apk/debug/SHA256SUMS.txt
           if-no-files-found: error
           retention-days: 14
