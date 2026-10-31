@@ -1,33 +1,20 @@
-# Roadmap
+# 项目路线图
 
-## Phase 0 — repository baseline
-- [x] Establish canonical repository and source layout.
-- [x] Add modern libxposed module metadata and lifecycle entry.
-- [x] Add fail-closed host version identification.
-- [x] Add initial unit test and CI workflow.
-- [ ] Run CI and confirm APK artifact.
+当前路线图以 docs/IMPLEMENTATION_ROADMAP.md 为准。
 
-## Phase 1 — static host mapping
-- [ ] Verify all DeepSeek 2.7.1 APK splits and DEX hashes.
-- [ ] Complete the chat request and streaming response call graph.
-- [ ] Identify transport implementation and database schema.
-- [ ] Publish evidence-backed host mapping.
+## 状态概览
 
-## Phase 2 — safe diagnostics
-- [ ] Add opt-in, redacted network metadata diagnostics.
-- [ ] Add independent hook installers with rollback.
-- [ ] Test host stability and cold/warm start.
+- [x] 建立唯一主仓库和基础工程结构
+- [x] 初始现代 libxposed 入口与模块元数据
+- [x] 初始 Kotlin 主代码迁移
+- [x] 项目规划、功能规格、兼容策略和扩展调研文档
+- [ ] CI 全绿并产出可安装 APK
+- [ ] 复核 DeepSeek APK/APKS、渠道、签名和 DEX 指纹
+- [ ] 完成独立 Hook Registry 和故障隔离
+- [ ] 完成请求/SSE/历史/数据库链路静态映射
+- [ ] 真机验证首个只读诊断 Hook
+- [ ] 提示词、置顶、导出、备份恢复
+- [ ] OpenAI 兼容 Local API
+- [ ] 高级功能与稳定发布
 
-## Phase 3 — data and conversation features
-- [ ] Read-only conversation export.
-- [ ] Backup and restore with schema versioning and transaction safety.
-- [ ] Prompt library and pinning in module-owned storage.
-- [ ] Conversation editing only after transactional proof and explicit user action.
-
-## Phase 4 — local API and advanced features
-- [ ] OpenAI-compatible local API with loopback binding and module-owned API key.
-- [ ] SSE bridge and cancellation/backpressure tests.
-- [ ] Multi-profile support without extracting host credentials.
-- [ ] Optional UI customization and app lock.
-
-Every item remains incomplete until source, tests and device evidence are recorded.
+每一项只有在代码、测试和必要的设备证据齐全后才能标记完成。
