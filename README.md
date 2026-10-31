@@ -38,6 +38,7 @@ YunSeek 1.8.1 README 声明支持国内 DeepSeek 2.7.1/code287、国内 2.7.2/co
 ## 规划与技术文档
 
 - [YunSeek 底包迁移与功能融合方案](docs/YUNSEEK_BASELINE_MIGRATION.md)
+- [YunSeek 源码审计与增量移植清单](docs/YUNSEEK_SOURCE_AUDIT.md)
 - [项目总体规划与技术决策](docs/PROJECT_PLAN.md)
 - [开源项目扩展调研记录](docs/RESEARCH_EXPANSION.md)
 - [DeepSeek Hook 深度研究与详细设计](docs/DEEPSEEK_HOOK_DESIGN.md)
