@@ -2,14 +2,20 @@
 
 ## Stage 0 — 规划基线（当前阶段）
 
+详细的 Hook 类、版本矩阵、请求/SSE/Agent/附件/会话/UI/Gateway 设计见 [DEEPSEEK_HOOK_DESIGN.md](DEEPSEEK_HOOK_DESIGN.md)。
+
 - [x] 明确唯一主仓库和 Kotlin 优先原则
 - [x] 初步核验核心参考仓库、fork 关系和许可证元数据
 - [x] 区分国内版 2.7.1 code 287 与 Play 版 2.7.1 code 288
 - [x] 建立架构、功能规格、兼容策略和研究扩展文档
 - [ ] 逐项复核关键文件和许可证文本
 - [ ] 完成宿主 APKS/split/DEX 样本复核
+- [x] 完成 Deekseep/YunSeek/com.dsmod.probe/DeepTranslate/GLMKit 关键 Hook 类静态审阅
+- [x] 建立 Hook 类职责矩阵与 Kotlin-first 目标架构
+- [ ] 将目标 Play 2.7.1/code288 样本重新核验并建立独立 Profile
+- [ ] 取得 packageName 精确为 com.deepseek.chat 的 2.7.2/2.7.3 样本
 
-验收：文档中的事实、静态线索、待验证假设分栏；无“已实现”误报。
+验收：文档中的事实、静态线索、待验证假设分栏；无“已实现”误报。新增设计文档中的符号只作为候选，未达到 E2/E3 不安装 Hook。
 
 ## Stage 1 — 工程稳定
 
