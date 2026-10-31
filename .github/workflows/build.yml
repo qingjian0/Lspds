@@ -26,8 +26,21 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
 
-      - name: Install Android SDK Platform 35 and Build Tools
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Install Android 17 SDK Platform 37.0 and Build Tools 37.0.0
+        run: |
+          sdkmanager --list --include_obsolete | tee sdk-packages.txt
+          grep -F "platforms;android-37.0" sdk-packages.txt
+          grep -F "build-tools;37.0.0" sdk-packages.txt
+          sdkmanager "platforms;android-37.0" "build-tools;37.0.0"
+
+      - name: Verify installed Android SDK packages
+        run: |
+          test -s "$ANDROID_HOME/platforms/android-37.0/android.jar"
+          test -x "$ANDROID_HOME/build-tools/37.0.0/aapt"
+          test -x "$ANDROID_HOME/build-tools/37.0.0/aapt2"
+          test -x "$ANDROID_HOME/build-tools/37.0.0/apksigner"
+          ls -l "$ANDROID_HOME/platforms/android-37.0/android.jar"
+          "$ANDROID_HOME/build-tools/37.0.0/aapt" version
 
       - name: Set up Gradle 9.8.2
         uses: gradle/actions/setup-gradle@v5
@@ -44,22 +57,13 @@ jobs:
             -dname 'CN=Android Debug,O=Android,C=US' \
             -keyalg RSA -keysize 2048 -validity 10000
 
-      - name: Apply runner-only SDK compatibility override
-        working-directory: compose-launcher
-        run: |
-          # The mirrored upstream declares compileSdk 37, which is not available
-          # on the GitHub-hosted runner SDK image used for this validation.
-          # Keep repository sources unchanged; use installed API 35 for this CI run.
-          sed -i 's/compileSdk = 37/compileSdk = 35/' app/build.gradle.kts
-          grep -n 'compileSdk = 35' app/build.gradle.kts
-
       - name: Build Open debug APK using the documented Gradle project task
         working-directory: compose-launcher
         run: |
           gradle --no-daemon --stacktrace \
             -PprotectedBuild=false \
             -PlocalApiIncluded=false \
-            -Pandroid.aapt2FromMavenOverride="$ANDROID_HOME/build-tools/35.0.0/aapt2" \
+            -Pandroid.aapt2FromMavenOverride="$ANDROID_HOME/build-tools/37.0.0/aapt2" \
             :app:assembleDebug
 
       - name: Verify APK package and version
@@ -67,10 +71,10 @@ jobs:
         run: |
           APK="app/build/outputs/apk/debug/app-debug.apk"
           test -s "$APK"
-          BADGING=$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK")
+          BADGING=$("$ANDROID_HOME/build-tools/37.0.0/aapt" dump badging "$APK")
           echo "$BADGING"
           echo "$BADGING" | grep -F "package: name='com.dsmod.probe' versionCode='37' versionName='1.8.1'"
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
+          "$ANDROID_HOME/build-tools/37.0.0/apksigner" verify --verbose --print-certs "$APK"
           sha256sum "$APK" | tee app/build/outputs/apk/debug/SHA256SUMS.txt
 
       - name: Upload validated debug APK
