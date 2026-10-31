@@ -42,10 +42,10 @@ jobs:
 
       - name: Validate signing secrets
         env:
-          KEYSTORE_BASE64: \${{ secrets.KEYSTORE_BASE64 }}
-          KEY_ALIAS: \${{ secrets.KEY_ALIAS }}
-          KEYSTORE_PASSWORD: \${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_PASSWORD: \${{ secrets.KEY_PASSWORD }}
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         shell: bash
         run: |
           set -euo pipefail
@@ -56,10 +56,10 @@ jobs:
 
       - name: Restore signing keystore outside workspace
         env:
-          KEYSTORE_BASE64: \${{ secrets.KEYSTORE_BASE64 }}
-          KEY_ALIAS: \${{ secrets.KEY_ALIAS }}
-          KEYSTORE_PASSWORD: \${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_PASSWORD: \${{ secrets.KEY_PASSWORD }}
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         shell: bash
         run: |
           set -euo pipefail
@@ -78,9 +78,9 @@ jobs:
       - name: Build signed Release APK
         working-directory: compose-launcher
         env:
-          RELEASE_KEYSTORE_PASSWORD: \${{ secrets.KEYSTORE_PASSWORD }}
-          RELEASE_KEY_ALIAS: \${{ secrets.KEY_ALIAS }}
-          RELEASE_KEY_PASSWORD: \${{ secrets.KEY_PASSWORD }}
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         shell: bash
         run: |
           set -euo pipefail
@@ -156,4 +156,4 @@ jobs:
             dist/SHA256SUMS.txt
             dist/BUILD-INFO.txt
         env:
-          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
