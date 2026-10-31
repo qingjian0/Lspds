@@ -21,6 +21,7 @@ Lspds 后续不再以当前空白 Hook 骨架作为业务功能的主要来源�
 本次核验到的 YunSeek 仓库信息：
 
 - 仓库：`https://github.com/ZW-SYS/Deekseep-Custom`
+- 本次锁定的上游基线 commit：`c315b82451d97e9668e2452992f1a0a2fd4a784a`（2026-10-31；后续更新必须显式审查差异后再升级）
 - README 标识版本：YunSeek 1.8.1，模块 versionCode 37。
 - 模块 applicationId：`com.dsmod.probe`。
 - 许可证：GPL-3.0。
