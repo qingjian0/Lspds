@@ -39,7 +39,7 @@
 
 ## 构建
 
-当前构建基线：JDK 21、Gradle 9.4.1、AGP 9.2.1、Android SDK 37。Kotlin 代码以 JDK 17 字节码目标为当前设置，需由 CI 最终验证。
+当前构建基线：JDK 21、Gradle 9.4.1、AGP 9.2.1、Android SDK 36。Kotlin 代码以 JDK 17 字节码目标为当前设置，需由 CI 最终验证。
 
 构建命令：gradle :app:testDebugUnitTest :app:assembleDebug
 
